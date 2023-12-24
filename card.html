@@ -7,20 +7,30 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        main {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            text-align: center;
+            margin-top: 0;
         }
 
         .container {
-             display: flex;
-             justify-content: center;
-             align-items: center;
-             height: 100vh;
+            display: flex;
+            justify-content: space-between;
         }
-
 
         .column {
             flex: 1;
@@ -38,27 +48,29 @@
 </head>
 <body>
 
-    <h1>Character List</h1>
+    <main>
+        <h1>Character List</h1>
 
-    <div class="container">
-        <div class="column">
-            <h2>Symbols</h2>
-            <ul>
-                <li>A</li>
-                <li>B</li>
-                <li>C</li>
-            </ul>
-        </div>
+        <div class="container">
+            <div class="column">
+                <h2>Symbols</h2>
+                <ul>
+                    <li>A</li>
+                    <li>B</li>
+                    <li>C</li>
+                </ul>
+            </div>
 
-        <div class="column">
-            <h2>Show</h2>
-            <ul>
-                <li>Eye</li>
-                <li>@</li>
-                <li>#</li>
-            </ul>
+            <div class="column">
+                <h2>Shows</h2>
+                <ul>
+                    <li>!</li>
+                    <li>@</li>
+                    <li>#</li>
+                </ul>
+            </div>
         </div>
-    </div>
+    </main>
 
 </body>
 </html>
