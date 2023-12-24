@@ -64,6 +64,7 @@
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
     <button onclick="downloadDrawing()">Download Drawing</button>
+    <input type="color" id="colorPicker" value="#000000" onchange="updateDrawingColor()">
   </div>
 
   <div id="rightContainer">
@@ -102,6 +103,7 @@
     let startY = 0;
     let isEraserMode = false;
     let penSize = 5; // Default pen size
+    let drawingColor = '#000000'; // Default drawing color
 
     drawingCanvas.addEventListener('mousedown', startDrawing);
     drawingCanvas.addEventListener('mouseup', stopDrawing);
@@ -135,6 +137,7 @@
         drawingContext.lineWidth = penSize;
         drawingContext.lineCap = 'round';
         drawingContext.lineJoin = 'round';
+        drawingContext.strokeStyle = drawingColor; // Set drawing color
         drawingContext.stroke();
 
         startX = x;
@@ -192,6 +195,10 @@
     function updatePenSize() {
       penSize = document.getElementById('penSize').value;
       document.getElementById('penSizeDisplay').textContent = 'Pen Size: ' + penSize;
+    }
+
+    function updateDrawingColor() {
+      drawingColor = document.getElementById('colorPicker').value;
     }
 
     function downloadDrawing() {
