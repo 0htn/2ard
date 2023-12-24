@@ -63,6 +63,7 @@
     <button onclick="toggleEraser()">Toggle Eraser</button>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
+    <button onclick="downloadDrawing()">Download Drawing</button>
   </div>
 
   <div id="rightContainer">
@@ -191,6 +192,16 @@
     function updatePenSize() {
       penSize = document.getElementById('penSize').value;
       document.getElementById('penSizeDisplay').textContent = 'Pen Size: ' + penSize;
+    }
+
+    function downloadDrawing() {
+      const dataURL = drawingCanvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'drawing.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     function saveToLocalStorage(title) {
