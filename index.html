@@ -61,10 +61,20 @@
     <button onclick="switchView('side')">Side View</button>
     <button onclick="switchView('side2')">Side View 2</button>
     <button onclick="toggleEraser()">Toggle Eraser</button>
+    <button onclick="toggleSymbol()">Toggle Symbol</button>
     <button onclick="undo()">Undo</button>
     <button onclick="redo()">Redo</button>
     <button onclick="downloadDrawing()">Download Drawing</button>
     <input type="color" id="colorPicker" value="#000000" onchange="updateDrawingColor()">
+    <select id="symbolSelect" onchange="changeSymbol()">
+      <option value="line">Line</option>
+      <option value="bracket">Bracket</option>
+      <option value="circle">Circle</option>
+      <option value="square">Square</option>
+      <!-- Add more options for other symbols -->
+    </select>
+    <input type="file" id="fileInput" onchange="handleFileUpload()">
+
   </div>
 
   <div id="rightContainer">
@@ -104,6 +114,8 @@
     let isEraserMode = false;
     let penSize = 5; // Default pen size
     let drawingColor = '#000000'; // Default drawing color
+    let isSymbolMode = false;
+    let selectedSymbol = 'line';
 
     drawingCanvas.addEventListener('mousedown', startDrawing);
     drawingCanvas.addEventListener('mouseup', stopDrawing);
@@ -132,8 +144,12 @@
         drawingContext.clearRect(x - penSize / 2, y - penSize / 2, penSize, penSize);
       } else {
         drawingContext.beginPath();
-        drawingContext.moveTo(startX, startY);
-        drawingContext.lineTo(x, y);
+        if (isSymbolMode) {
+          drawSymbol(startX, startY, x, y, selectedSymbol);
+        } else {
+          drawingContext.moveTo(startX, startY);
+          drawingContext.lineTo(x, y);
+        }
         drawingContext.lineWidth = penSize;
         drawingContext.lineCap = 'round';
         drawingContext.lineJoin = 'round';
@@ -143,6 +159,54 @@
         startX = x;
         startY = y;
       }
+    }
+
+    function drawSymbol(x1, y1, x2, y2, symbol) {
+      switch (symbol) {
+        case 'line':
+          drawingContext.moveTo(x1, y1);
+          drawingContext.lineTo(x2, y2);
+          break;
+        case 'bracket':
+          drawBracket(x1, y1, x2, y2);
+          break;
+        case 'circle':
+          drawCircle(x1, y1, x2, y2);
+          break;
+        case 'square':
+          drawSquare(x1, y1, x2, y2);
+          break;
+        // Add more cases for other symbols
+      }
+    }
+
+    function drawBracket(x1, y1, x2, y2) {
+      const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      const offset = penSize / 2;
+
+      const x3 = x1 + distance * Math.cos(angle - Math.PI / 4);
+      const y3 = y1 + distance * Math.sin(angle - Math.PI / 4);
+      const x4 = x1 + distance * Math.cos(angle + Math.PI / 4);
+      const y4 = y1 + distance * Math.sin(angle + Math.PI / 4);
+
+      drawingContext.moveTo(x1 - offset, y1 - offset);
+      drawingContext.lineTo(x3 - offset, y3 - offset);
+      drawingContext.moveTo(x1 + offset, y1 + offset);
+      drawingContext.lineTo(x4 + offset, y4 + offset);
+    }
+
+    function drawCircle(x1, y1, x2, y2) {
+      const radius = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2) / 2;
+      drawingContext.arc(x1, y1, radius, 0, 2 * Math.PI);
+    }
+
+    function drawSquare(x1, y1, x2, y2) {
+      const side = Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
+      const xCenter = x1 < x2 ? x1 + side / 2 : x1 - side / 2;
+      const yCenter = y1 < y2 ? y1 + side / 2 : y1 - side / 2;
+
+      drawingContext.rect(xCenter - side / 2, yCenter - side / 2, side, side);
     }
 
     function saveToHistory() {
@@ -190,6 +254,14 @@
 
     function toggleEraser() {
       isEraserMode = !isEraserMode;
+    }
+
+    function toggleSymbol() {
+      isSymbolMode = !isSymbolMode;
+    }
+
+    function changeSymbol() {
+      selectedSymbol = document.getElementById('symbolSelect').value;
     }
 
     function updatePenSize() {
@@ -286,6 +358,24 @@
 
     // Initialize the saved drawings list
     updateSavedDrawingsList();
+
+    function handleFileUpload() {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = new Image();
+          img.onload = function () {
+            drawingContext.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            drawingContext.drawImage(img, 0, 0);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   </script>
 </body>
 </html>
